@@ -44,3 +44,7 @@ flowchart TD
 | **通信**       | SSL / TCP               | Agent ↔ Zabbix Server 間、Server ↔ DB 接続 | セキュア接続を前提           |
 | **DBクライアント** | MariaDB クライアント / Docker | 接続確認・スキーマ投入                            | ローカル macOS からの接続に使用 |
 | **バックアップ**   | オプション: Object Storage   | DBや設定のバックアップ保管                         | PoCでは未導入でも可         |
+
+## セットアップ
+
+- ad

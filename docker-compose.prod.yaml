@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  zabbix-server:
+    build:
+      context: .
+      dockerfile: Dockerfile-zbxserver
+    env_file:
+      - .env
+    container_name: zabbix-server-prod
+    ports:
+      - "10051:10051"
+    networks:
+      - zabbix-prod
+
+  zabbix-web:
+    build:
+      context: .
+      dockerfile: Dockerfile-zbxweb
+    container_name: zabbix-web-prod
+    depends_on:
+      - zabbix-server
+    env_file:
+      - .env
+    environment:
+      PHP_TZ: Asia/Tokyo
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    networks:
+      - zabbix-prod
+
+networks:
+  zabbix-prod:
+    driver: bridge

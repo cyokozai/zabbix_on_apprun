@@ -1,0 +1,52 @@
+#cloud-config
+chpasswd: {expire: false}
+ssh_pwauth: false
+package_update: true
+package_upgrade: true
+packages:
+  - jq
+  - git
+  - wget
+  - curl
+power_state:
+  mode: reboot
+users:
+  - name: cyokozai
+    passwd: ERM96CSUTC4xpt
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDwPTNz9M8GdFrRFr1C185rHnIJNl+YTbRjRZgqnLEFz yusuke@EpicOrder.local
+    sudo: ALL=(ALL) NOPASSWD:ALL_
+    groups: users, admin
+    shell: /bin/bash
+write_files:
+  - path: /etc/zabbix/zabbix_agentd.conf
+    content: |
+      Server=127.0.0.1
+      ServerActive=127.0.0.1
+      Hostname=ubuntu-server
+      EnableRemoteCommands=1
+      LogRemoteCommands=1
+      ListenIP=0.0.0.0
+      ListenPort=10050
+      LogFile=/var/log/zabbix/zabbix_agentd.log
+      LogFileSize=0
+      PidFile=/var/run/zabbix/zabbix_agentd.pid
+      Include=/etc/zabbix/zabbix_agentd.conf.d/*.conf
+    owner: root:root
+    permissions: '0644'
+runcmd:
+  - [localectl, set-keymap, jp]
+  - [localectl, set-x11-keymap, jp]
+  - wget https://repo.zabbix.com/zabbix/7.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_7.4-1+ubuntu24.04_all.deb
+  - dpkg -i zabbix-release_7.4-1+ubuntu24.04_all.deb
+  - apt install -y zabbix-agent
+  - systemctl enable zabbix-agent
+  - systemctl start zabbix-agent
+  - ufw allow 10050/tcp
+  - systemctl restart nginx
+  - systemctl status zabbix-agent --no-pager
+final_message: |
+  Zabbix Agent のセットアップが完了しました。
+  Zabbix Agent がポート 10050 で動作しています。
+  設定ファイル: /etc/zabbix/zabbix_agentd.conf
+  ログファイル: /var/log/zabbix/zabbix_agentd.log

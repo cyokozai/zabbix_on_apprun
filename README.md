@@ -35,7 +35,7 @@ flowchart TD
 ## 技術スタック
 
 | 分類           | 技術・サービス                 | 用途・役割                                  | 備考                  |
-| ------------ | ----------------------- | -------------------------------------- | ------------------- |
+| ----------- | ---------------------- | ------------------------------------- | ------------------ |
 | **クラウド基盤**   | さくらのクラウド AppRun         | サーバレス環境で Zabbix Server / Web を実行       | コンテナベースで運用可能        |
 | **DB**       | エンハンスドデータベース (MariaDB)  | Zabbix のデータ永続化                         | 作成済み DB: `zabbix`   |
 | **監視サーバ**    | Zabbix Server (Docker)  | オンプレミスの死活監視・メトリクス収集                    | 公式イメージ使用            |
@@ -47,4 +47,45 @@ flowchart TD
 
 ## セットアップ
 
-- ad
+- [Download](https://www.zabbix.com/jp/download)
+
+1. Become root user
+
+    Start new shell session with root privileges.
+
+    ```shell
+    sudo -s
+    ```
+
+2. Install Zabbix repository
+
+    ``` shell
+    wget https://repo.zabbix.com/zabbix/7.4/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.4+ubuntu22.04_all.deb
+    dpkg -i zabbix-release_latest_7.4+ubuntu22.04_all.deb
+    apt update
+    ```
+
+3. Install Zabbix agent 2
+
+    Install zabbix-agent2 package.
+
+    ```shell
+    apt install zabbix-agent2
+    ```
+
+4. Install Zabbix agent 2 plugins
+
+    You may want to install Zabbix agent 2 plugins.
+
+    ```shell
+    apt install zabbix-agent2-plugin-mongodb zabbix-agent2-plugin-mssql zabbix-agent2-plugin-postgresql
+    ```
+
+5. Start Zabbix agent 2 process
+
+    Start Zabbix agent 2 process and make it start at system boot.
+
+    ```shell
+    systemctl restart zabbix-agent2
+    systemctl enable zabbix-agent2
+    ```
